@@ -104,7 +104,7 @@ glimpse(mloa_3)
 
 mloa_3 %>% ggplot()+
   geom_point(aes(x=which_month, y = avg_temp), size =3, color = "blue") +
-  geom_line(aes(x=which_month, y = avg_temp))
+  geom_line(aes(x=which_month, y = avg_temp, group =1))
 #Michael is checking this out
 
 
