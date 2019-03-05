@@ -1,0 +1,134 @@
+---
+title: "Untitled"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+---
+title: "Week9_Markdown"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+This is an Rmarkdown document. I can type whatever I want.
+
+**This is bold**
+
+*This is italic*
+
+### This will make the font bigger
+##This will make it slightly smaller
+
+Ctrl-Alt-I shortcut to add code
+
+```{r}
+library(tidyverse)
+glimpse(storms)
+
+library(viridis) #do not install packages in R Markdown files, install in console
+
+ggplot(data=storms)+
+  geom_jitter(aes(x= as.factor(month), y=pressure, fill=wind), pch=21, alpha= .05)+
+  scale_fill_viridis_c()+
+  theme_bw()+
+  labs(title = "Hurricane Pressure v  Month", subtitle ="with Max Wind Speed", x="Month")
+```
+
+Everything that would normally pop-up in our console will show up in our html document
+
+
+
+```{r, warning=FALSE, message=FALSE}
+suppressPackageStartupMessages(library(tidyverse))
+glimpse(storms)
+
+library(viridis) #do not install packages in R Markdown files, install in console
+
+ggplot(data=storms)+
+  geom_jitter(aes(x= as.factor(month), y=pressure, fill=wind), pch=21, alpha= .05)+
+  scale_fill_viridis_c()+
+  theme_bw()+
+  labs(title = "Hurricane Pressure v  Month", subtitle ="with Max Wind Speed", x="Month")
+
+
+```
+
+Writing our equations in Rmarkdown:
+
+If you want to write an equation, you put a $ on either side of it.
+
+$\sum_{i=y}^n x_i$
+
+```{r}
+library(knitr)
+
+kable(head(storms), caption="Table using Kable")
+
+htmlTable::htmlTable(head(storms))
+
+#make an interactive table
+
+DT::datatable(storms)
+
+```
+
+
+```{r}
+library(plotly)
+
+ggplotly(
+  ggplot(data=storms)+
+  geom_jitter(aes(x= as.factor(month), y=pressure, fill=wind), pch=21, alpha= .05)+
+  scale_fill_viridis_c()+
+  theme_bw()+
+  labs(title = "Hurricane Pressure v  Month", subtitle ="with Max Wind Speed", x="Month")
+)
+
+#Plotly allows you to look at different layers of plot, zoom in/out, etc.
+
+```
+
+```{r}
+library(leaflet)  #produces interactive maps
+
+# filter data down 
+storms <- filter(storms, year > 2006)
+
+# set up a color palette:
+pal <- colorNumeric(
+  palette = "RdYlBu",
+  domain = storms$wind)
+
+# make a map
+m <- leaflet() %>% addTiles() %>% 
+  addProviderTiles("Esri.WorldImagery", group = "ESRI Aerial") %>%
+  addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
+  
+# proposed sites
+  addCircleMarkers(data=storms, group="Storms",
+                   lng= ~long, lat= ~lat,
+                   stroke=TRUE, weight=0.6, radius=4,
+                   fillOpacity = 0.5, color=~pal(wind)) %>%
+  
+  # add controls for basemaps and data
+  addLayersControl(
+    baseGroups = c("ESRI Aerial", "Topo"),
+    overlayGroups = c("Storms"),
+    options = layersControlOptions(collapsed = T))
+
+m
+```
+
+
+
+
+
+
+
+
+
+
+
+
